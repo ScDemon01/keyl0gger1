@@ -4,5 +4,5 @@
 int main (void)
 {
     printf("Tratata");
-    return 0
+    return 0;
 }
