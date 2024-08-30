@@ -1,8 +1,10 @@
-#include <winsock2.h>
-#include <windows.h>
+#define _WIN32_WINNT 0x0600  // for Windows Vista and later
 #include <stdio.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h>
 
-#pragma comment(lib, "ws2_32.lib")
+// #pragma comment(lib, "ws2_32.lib")
 
 #define SERVER_IP "127.0.0.1" // Replace with your server IP
 #define SERVER_PORT 4444
