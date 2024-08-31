@@ -1,5 +1,5 @@
 # keyl0gger1
-C Keylogger, python server.
+C Keylogger For Windows, python server.
 
 Usage:
 Configure address to connect in C code.
